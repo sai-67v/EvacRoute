@@ -5,10 +5,6 @@
 [![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-OSMnx-7EBC6F?logo=openstreetmap)](https://openstreetmap.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<div align="center">
-  <img src="assets/demo_screenshot.png" alt="EvacRoute Dashboard" width="800"/>
-</div>
-
 **EvacRoute** is a real-time geospatial decision-support system developed for disaster evacuation planning. It couples multi-hazard risk modeling with network graph optimization on physical road networks to compute **least-risk emergency evacuation corridors** rather than blindly taking the shortest distance path.
 
 ---
@@ -26,11 +22,6 @@ During severe climate events (floods, flash floods, landslides, and slope failur
 
 ## ✨ Key Features & Capabilities
 
-<div align="center">
-  <img src="assets/demo_video.webp" alt="EvacRoute Demo" width="800"/>
-  <p><em>Real-time generation of risk-penalized evacuation routes vs standard shortest paths</em></p>
-</div>
-
 - **🛰️ Multi-Hazard MCDM Integration**:
   - **Landslide Vulnerability**: Sourced from Copernicus GLO-30 DEM slope modeling.
   - **Inundation Exposure**: Sourced from JRC Global Surface Water occurrence and low-elevation flood basins.
@@ -38,7 +29,7 @@ During severe climate events (floods, flash floods, landslides, and slope failur
 - **🛣️ Intelligent Evacuation Pathfinding**:
   - Uses `osmnx` and `networkx` to model driveable road networks.
   - Cost function: $\text{Cost}(e) = \text{Length}(e) \times (1 + \text{Risk}(e) \times 18)$.
-  - Provides dual-path comparison: 🔵 **Standard Shortest Path** vs. 🔴 **SafeRoute Evacuation Corridor**.
+  - Provides dual-path comparison: 🔵 **Standard Shortest Path** vs. 🔴 **EvacRoute Evacuation Corridor**.
 - **🏥 Critical Infrastructure Mapping**:
   - Ingests hospitals, clinics, emergency shelters, and relief facilities live from OpenStreetMap.
 - **📊 Real-Time Decision Support Analytics**:
