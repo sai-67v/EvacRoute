@@ -8,7 +8,7 @@ def get_road_network(roi_bounds):
     roi_bounds: tuple of (north, south, east, west)
     """
     north, south, east, west = roi_bounds
-    G = ox.graph_from_bbox(north, south, east, west, network_type='drive')
+    G = ox.graph_from_bbox(bbox=(north, south, east, west), network_type='drive')
     return G
 
 def add_risk_weights_to_graph_gee(G, risk_image):

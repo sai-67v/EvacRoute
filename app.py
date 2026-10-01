@@ -82,7 +82,7 @@ def generate_simulated_hazard_grid(bounds, flood_weight=0.5, landslide_weight=0.
 def get_road_network(roi_bounds):
     """Fetches OpenStreetMap road network with caching."""
     north, south, east, west = roi_bounds
-    G = ox.graph_from_bbox(north, south, east, west, network_type='drive')
+    G = ox.graph_from_bbox(bbox=(north, south, east, west), network_type='drive')
     return G
 
 @st.cache_data(show_spinner=False)
