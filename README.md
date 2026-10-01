@@ -1,114 +1,82 @@
-# Flood Deduction & Impact Assessment System
+# 🛡️ EvacRoute: Multi-Hazard Decision Support & Emergency Routing System
 
-This repository contains the complete source code, operational workflows, and historical disaster validation benchmarks for the **Flood Deduction & Impact Assessment System** powered by Google Earth Engine (GEE) and Sentinel-1 Synthetic Aperture Radar (SAR) imagery.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://streamlit.io)
+[![Google Earth Engine](https://img.shields.io/badge/Google%20Earth%20Engine-Enabled-4285F4?logo=google-earth)](https://earthengine.google.com/)
+[![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-OSMnx-7EBC6F?logo=openstreetmap)](https://openstreetmap.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The system performs near-real-time satellite flood extent extraction, terrain/seasonality filtering, inundation depth estimation, and socio-economic exposure analytics (population & land cover vulnerability).
-
----
-
-### 🌊 Inundation Mapping Pipeline
-The animated preview below demonstrates the interactive flood extraction and baseline swipe workflow:
-![](media/GFM-v2-floodmapping.gif)
-
-### 📊 Disaster Impact Assessment Portal
-The animated preview below demonstrates the socio-economic exposure analytics, population quantification, and land cover vulnerability breakdown:
-![](media/GFM-v2-impactassessment.gif)
-
-> **Browser Note:** For the best performance and WebGL rendering of Earth Engine split-map panels, Google Chrome or Chromium-based browsers are recommended.
+**EvacRoute** is a real-time geospatial decision-support system developed for disaster evacuation planning. It couples multi-hazard risk modeling with network graph optimization on physical road networks to compute **least-risk emergency evacuation corridors** rather than blindly taking the shortest distance path.
 
 ---
 
-## ⚡ Core Capabilities & Algorithmic Pipeline
+## 🎯 The Challenge & Problem Statement
+During severe climate events (floods, flash floods, landslides, and slope failures), standard navigation tools (e.g., Google Maps, Waze) calculate routes based solely on travel time or distance. In disaster scenarios, this frequently routes evacuating citizens and emergency responders straight through submerged river basins, washed-out roads, or active landslide corridors.
 
-The **Flood Deduction & Impact Assessment System** enables rapid extraction of high-precision inundation footprints by selecting an Area of Interest (AOI) and comparing pre-event baseline and peak flood SAR backscatter:
-
-- **Sentinel-1 GRD SAR Processing**: Dual-polarization ($\text{VV}$ & $\text{VH}$) backscatter calibration with Refined Lee speckle filtering.
-- **Dynamic Z-Score Thresholding**: Statistical log-ratio difference computation (default `-3.0 dB`) to detect specular water reflections.
-- **Topographic Terrain Masking**: HydroSHEDS / Copernicus DEM slope filtering (default `< 15°`) and elevation cutoff (default `900 m`) to remove shadow artifacts.
-- **Permanent Water Masking**: JRC Global Surface Water seasonality filtering (default `75%`) to isolate genuine flood inundation.
-- **Exposure & Impact Assessment**: Direct raster integration with **WorldPop** (affected population density) and **Dynamic World / Copernicus Land Cover** classification.
-- **Multi-Format Export Pipeline**: One-click asynchronous export to Google Drive in **GeoTIFF** raster or ESRI **Shapefile (SHP)** formats.
+**EvacRoute** solves this by:
+1. Generating continuous, normalized multi-hazard raster layers (Flood + Landslide/Slope).
+2. Constructing an **MCDM (Multi-Criteria Decision Making)** risk index.
+3. Overlaying the risk surface onto real **OpenStreetMap road graphs**.
+4. Executing risk-penalized Dijkstra pathfinding to route people safely around hazard corridors.
 
 ---
 
-## 💻 Source Code & Google Earth Engine Setup
+## ✨ Key Features & Capabilities
 
-The complete modular Earth Engine JavaScript scripts are available in [`source_code/`](./source_code):
-
-1. Open the [Google Earth Engine Code Editor](https://code.earthengine.google.com/).
-2. Run the modules directly:
-   - [`source_code/gfm-v2.js`](./source_code/gfm-v2.js): Complete main application script with UI panels, dual map swipe view, analytics engine, and export pipelines.
-   - [`source_code/countrystates.js`](./source_code/countrystates.js): Global administrative boundary dictionary module (FAO GAUL Level 1).
-
----
-
-## 📖 Recommended Workflow & Tuning Manual
-See [instructions/README.md](./instructions/README.md) for full step-by-step instructions:
-- **Step 1**: Select Area of Interest (Country/State dropdown or interactive "Draw AOI" bounding box)
-- **Step 2**: Select pre-flood baseline date range (1–2 months prior, 60-day baseline recommended)
-- **Step 3**: Select during-flood peak disaster date range
-- **Step 4**: Swipe between pre-flood and during-flood SAR backscatter to verify water change
-- **Step 5**: Export flood footprint as GeoTIFF or Shapefile (SHP)
-- **Advanced Calibration**: Tuning $\text{Z}_{\text{VV}}$, $\text{Z}_{\text{VH}}$, permanent water seasonality, and DEM slope parameters
-- **Impact Assessment Portal**: Analyzing affected population counts and land cover disruption
+- **🛰️ Multi-Hazard MCDM Integration**:
+  - **Landslide Vulnerability**: Sourced from Copernicus GLO-30 DEM slope modeling.
+  - **Inundation Exposure**: Sourced from JRC Global Surface Water occurrence and low-elevation flood basins.
+  - **User-Adjustable Weights**: Customizable sliders for disaster commanders to tailor priority weights.
+- **🛣️ Intelligent Evacuation Pathfinding**:
+  - Uses `osmnx` and `networkx` to model driveable road networks.
+  - Cost function: $\text{Cost}(e) = \text{Length}(e) \times (1 + \text{Risk}(e) \times 18)$.
+  - Provides dual-path comparison: 🔵 **Standard Shortest Path** vs. 🔴 **SafeRoute Evacuation Corridor**.
+- **🏥 Critical Infrastructure Mapping**:
+  - Ingests hospitals, clinics, emergency shelters, and relief facilities live from OpenStreetMap.
+- **📊 Real-Time Decision Support Analytics**:
+  - Quantitative metrics displaying distance trade-offs, hazard exposure scores, and **% Life Safety Gain**.
+- **💾 GIS Data Export**:
+  - One-click export of calculated evacuation corridors as standard **GeoJSON**.
+- **⚡ 1-Click Demo Scenarios**:
+  - Pre-configured regional disaster scenarios (Himalayan Flash Floods & Western Ghats Slope Failures).
 
 ---
 
-## 🌍 Global Benchmark Disaster Case Studies
-Explore validated historical flood events with exact satellite parameters, dates, and high-resolution results in [examples/README.md](./examples/README.md):
-
-- **2021**: [Pahang, Malaysia](./examples/2021)
-- **2020**: [Bihar, India](./examples/2020) | [Huế, Vietnam](./examples/2020) | [Cambodia](./examples/2020)
-- **2019**: [Assam, India](./examples/2019) | [Beira, Mozambique](./examples/2019) | [Bahamas](./examples/2019)
-- **2018**: [Kauai, Hawaii, USA](./examples/2018)
-- **2017**: [Houston, Texas, USA](./examples/2017) | [Sylhet, Bangladesh](./examples/2017)
-- **2016**: [Roscommon, Ireland](./examples/2016)
-- **2015**: [England, UK](./examples/2015) | [Greece](./examples/2015)
-- **Multi-Year Temporal Study**: [Bihar Inundation Dynamics 2017–2020](./examples/BiharTemporal)
-
----
-
-## 📁 Repository Structure
+## 📂 Repository Structure
 
 ```
-├── examples/             # Verified global flood case studies (2015-2021)
-│   ├── 2015/ ... 2021/   # Per-year documentation, parameters, and result imagery
-│   └── BiharTemporal/    # Temporal multi-year inundation analysis (2017-2020)
-├── instructions/         # Comprehensive user manual, calibration guide & troubleshooting
-│   └── README.md
-├── media/                # Visual assets, interface GIFs, legends, and result maps
-├── source_code/          # Earth Engine source code modules
-│   ├── countrystates.js  # Administrative boundary lookup module
-│   ├── gfm-v2.js         # Flood Deduction core algorithm & UI application script
-│   └── README.md
+├── app.py                # Main Streamlit web application & UI
+├── gee_hazards.py        # Earth Engine multi-hazard MCDM algorithms
+├── routing_engine.py     # OSMnx road network extraction & risk-penalized Dijkstra
+├── requirements.txt      # Python dependencies
+├── plan.md               # Engineering roadmap & architectural decisions
+├── status.md             # Project verification & task tracking
 └── README.md             # Project documentation
 ```
 
 ---
 
-## 📚 Scientific References & Methodology
+## 🚀 Installation & Local Execution
 
-```bibtex
-@article{tripathy2022global,
-  title={Global Flood Mapper: a novel Google Earth Engine application for rapid flood mapping using Sentinel-1 SAR},
-  author={Tripathy, Pratyush and Malladi, Teja},
-  journal={Natural Hazards},
-  volume={114},
-  number={2},
-  pages={1251--1271},
-  year={2022},
-  publisher={Springer},
-  doi={10.1007/s11069-022-05428-2}
-}
+### 1. Clone the Repository
+```bash
+git clone https://github.com/sai-67v/EvacRoute.git
+cd EvacRoute
 ```
 
-```bibtex
-@inproceedings{tripathy2021global,
-  title={Global Flood Mapper: Democratising open EO resources for flood mapping},
-  author={Tripathy, Pratyush and Malladi, Teja},
-  booktitle={EGU General Assembly Conference Abstracts},
-  pages={EGU21--16194},
-  year={2021},
-  doi={10.5194/egusphere-egu21-16194}
-}
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
 ```
+
+### 3. Run the Web Application
+```bash
+streamlit run app.py
+```
+Open your browser at `http://localhost:8501`.
+
+---
+
+## 🛠️ Tech Stack
+- **Web Interface**: [Streamlit](https://streamlit.io/)
+- **Geospatial & Remote Sensing**: [Google Earth Engine Python API](https://developers.google.com/earth-engine), [Folium](https://python-visualization.github.io/folium/)
+- **Road Network Analysis**: [OSMnx](https://osmnx.readthedocs.io/), [NetworkX](https://networkx.org/), [GeoPandas](https://geopandas.org/)
